@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpStatus } from '@nestjs/common';
 import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
@@ -11,17 +11,20 @@ export class CityController {
   create(@Body() createCityDto: CreateCityDto) {
     return this.cityService.create(createCityDto);
   }
-
+*/
   @Get()
-  findAll() {
-    return this.cityService.findAll();
+  getAllCities() {
+    return this.cityService.getAllCities();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cityService.findOne(+id);
+  async getCityById(
+    @Param('id', new ParseIntPipe({ 
+      errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE 
+    })) id: number) {
+    return this.cityService.getCityById(id);
   }
-
+/*
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCityDto: UpdateCityDto) {
     return this.cityService.update(+id, updateCityDto);

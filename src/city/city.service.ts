@@ -10,12 +10,12 @@ export class CityService {
   private readonly cityRepository: Repository<City>) {
   }
 
-  async getAll() : Promise<City[]> {
+  async getAllCities() : Promise<City[]> {
     const cities: City[] = await this.cityRepository.find()
     return cities;
   }
 
-  async getById (id: number) : Promise<City> {
+  async getCityById (id: number) : Promise<City> {
     try {
       const criteria: FindOneOptions = { where: { id_city: id}}
       const city: City = await this.cityRepository.findOne( criteria );

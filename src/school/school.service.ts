@@ -9,7 +9,7 @@ export class SchoolService {
     constructor(@InjectRepository(School)
     private readonly schoolReposytory: Repository<School>) { }
 
-    async getAll(): Promise<School[]> {
+    async getAllSchools(): Promise<School[]> {
         const schools: School[] = await this.schoolReposytory.find();
         return schools;
 

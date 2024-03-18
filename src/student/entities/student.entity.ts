@@ -1,6 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-
 @Entity('students')
 export class Student {
     @PrimaryGeneratedColumn()
@@ -9,7 +8,7 @@ export class Student {
     @Column("varchar", { length: 255 })
     private name: string;
 
-    @Column("varchar", { length: 255 })
+    @Column("varchar")
     private lastname: string;
 
     @Column("datetime")
