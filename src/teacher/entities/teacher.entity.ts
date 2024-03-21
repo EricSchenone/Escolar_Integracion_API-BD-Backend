@@ -24,4 +24,5 @@ export class Teacher {
 
     getLastname(): string { return this.lastname };
     setLastname( lastname : string ): void { this.lastname = lastname };
+    
 }

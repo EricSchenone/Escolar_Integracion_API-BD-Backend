@@ -1,1 +1,4 @@
-export class CreateCityDto {}
+
+export class CityDto {
+    readonly name: string;
+}

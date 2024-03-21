@@ -1,17 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpStatus, Put } from '@nestjs/common';
 import { CityService } from './city.service';
-import { CreateCityDto } from './dto/create-city.dto';
-import { UpdateCityDto } from './dto/update-city.dto';
+import { CityDto } from './dto/create-city.dto';
+import { City } from './entities/city.entity';
 
 @Controller('city')
 export class CityController {
-  constructor(private readonly cityService: CityService) {}
-/*
+  constructor(private readonly cityService: CityService) { }
+
   @Post()
-  create(@Body() createCityDto: CreateCityDto) {
-    return this.cityService.create(createCityDto);
+  createCity(@Body() city: CityDto): Promise<City> {
+    return this.cityService.createCity(city);
   }
-*/
+
   @Get()
   getAllCities() {
     return this.cityService.getAllCities();
@@ -19,19 +19,29 @@ export class CityController {
 
   @Get(':id')
   async getCityById(
-    @Param('id', new ParseIntPipe({ 
-      errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE 
+    @Param('id', new ParseIntPipe({
+      errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
     })) id: number) {
     return this.cityService.getCityById(id);
   }
-/*
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCityDto: UpdateCityDto) {
-    return this.cityService.update(+id, updateCityDto);
+
+  @Put(':id')
+  async updateCity(
+    @Param(('id'), new ParseIntPipe({
+      errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+    })) id: number,
+    @Body() city: CityDto): Promise<City> {
+    return this.cityService.updateCity(id, city);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cityService.remove(+id);
-  }*/
+  /*
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updateCityDto: UpdateCityDto) {
+      return this.cityService.update(+id, updateCityDto);
+    }
+  
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+      return this.cityService.remove(+id);
+    }*/
 }
