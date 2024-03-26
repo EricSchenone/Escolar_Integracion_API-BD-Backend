@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, FindOptions, QueryFailedError, Repository } from 'typeorm';
+import { FindOneOptions, QueryFailedError, Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { StudentDto } from './dto/create-student.dto';
 
@@ -87,6 +87,28 @@ export class StudentService {
                 error: 'Error en la actualizacion del alumno'
             },
                 HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async deleteStudent(id: number): Promise<void> {
+        try {
+            const criteria: FindOneOptions = { where: { id_student: id } };
+            const student: Student = await this.studentRepository.findOne(criteria)
+            if (!student) throw new NotFoundException('No existe una escuela con el id:' + id)
+            await this.studentRepository.delete(student.getIdStudent());
+    
+        } catch (error) {
+            if (error instanceof QueryFailedError) {
+                throw new HttpException({
+                    status: HttpStatus.INTERNAL_SERVER_ERROR,
+                    error: 'Error en la eliminación del estudiante en la base de datos'
+                }, HttpStatus.INTERNAL_SERVER_ERROR)
+            };
+            throw new HttpException({
+                status: HttpStatus.NOT_FOUND,
+                error: 'Error en la eliminación del estudiante'
+            },
+                HttpStatus.NOT_FOUND)
         }
     }
 

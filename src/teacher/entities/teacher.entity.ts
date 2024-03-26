@@ -6,10 +6,10 @@ export class Teacher {
     @PrimaryGeneratedColumn()
     private id_teacher: number;
 
-    @Column("varchar", { length: 255 })
+    @Column()
     private name: string;
 
-    @Column("varchar", { length: 255})
+    @Column()
     private lastname: string;
 
     constructor( name: string, lastname: string) {

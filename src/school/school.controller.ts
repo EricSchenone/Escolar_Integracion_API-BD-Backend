@@ -1,14 +1,14 @@
-import { Controller, Get, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { SchoolService } from './school.service';
 import { SchoolDto } from './dto/create-school.dto';
 import { School } from './entities/school.entity';
 
 @Controller('school')
 export class SchoolController {
-  constructor(private readonly schoolService: SchoolService) {}
+  constructor(private readonly schoolService: SchoolService) { }
 
   @Post()
-  async createSchool( school: SchoolDto ): Promise<School> {
+  createSchool(@Body() school: SchoolDto): Promise<School> {
     return this.schoolService.createSchool(school)
   }
 
@@ -19,9 +19,16 @@ export class SchoolController {
 
   @Get(':id')
   async getSchoolById(@Param(
-    'id', new ParseIntPipe({ 
+    'id', new ParseIntPipe({
       errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
     })) id: number) {
-      return this.schoolService.getSchoolById(id);
-    }
+    return this.schoolService.getSchoolById(id);
+  }
+
+  @Delete(':id')
+  async deleteSchool(@Param(('id'), new ParseIntPipe({
+    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+  }))id: number): Promise<void> {
+    return this.schoolService.deleteSchool(id)
+  }
 }

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from './entities/teacher.entity';
 import { FindOneOptions, QueryFailedError, Repository } from 'typeorm';
@@ -66,6 +66,28 @@ export class TeacherService {
                 error: 'Error en la actualizacion del profesor'
             },
                 HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async deleteTeacher(id: number): Promise<void> {
+        try {
+            const criteria: FindOneOptions = { where: { id_school: id } };
+            const teacher: Teacher = await this.teacherRepository.findOne(criteria)
+            if (!teacher) throw new NotFoundException('No existe una escuela con el id:' + id)
+            await this.teacherRepository.delete(teacher.getIdTeacher());
+    
+        } catch (error) {
+            if (error instanceof QueryFailedError) {
+                throw new HttpException({
+                    status: HttpStatus.INTERNAL_SERVER_ERROR,
+                    error: 'Error en la eliminación del profesor en la base de datos'
+                }, HttpStatus.INTERNAL_SERVER_ERROR)
+            };
+            throw new HttpException({
+                status: HttpStatus.NOT_FOUND,
+                error: 'Error en la eliminación del profesor'
+            },
+                HttpStatus.NOT_FOUND)
         }
     }
 }

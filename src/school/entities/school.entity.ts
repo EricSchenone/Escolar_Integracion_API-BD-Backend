@@ -13,13 +13,14 @@ export class School {
     @Column("varchar", { length: 100 })
     private address: string;
     
-    @ManyToOne(() => City, city => city.school)
+   /* @ManyToOne(() => City, city => city.school)
     @JoinColumn({ name: 'id_city' })
-    city: City;
+    city: City;*/
 
     constructor( name: string, address: string) {
         this.name = name,
         this.address = address
+        
     }
 
     getIdSchool(): number { return this.id_school };
@@ -29,5 +30,8 @@ export class School {
 
     getAddress(): string { return this.address };
     setAddress( address: string ): void { this.address = address };
+/*
+    getCity(): City { return this.city };
+    setCity( city: City): void { this.city = city }*/
     
 }

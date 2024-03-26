@@ -8,10 +8,10 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 
         @Column()
         private name: string;
-
+/*
         @OneToMany(() => School, (school) => school.city)
         school: School[];
-    
+    */
 
         constructor(name : string) {
             this.name = name;

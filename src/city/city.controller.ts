@@ -34,14 +34,10 @@ export class CityController {
     return this.cityService.updateCity(id, city);
   }
 
-  /*
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateCityDto: UpdateCityDto) {
-      return this.cityService.update(+id, updateCityDto);
-    }
-  
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-      return this.cityService.remove(+id);
-    }*/
+  @Delete(':id')
+  async deleteCity(@Param(('id'), new ParseIntPipe({
+    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+  }))id: number): Promise<void> {
+    return this.cityService.deleteCity(id)
+  }
 }

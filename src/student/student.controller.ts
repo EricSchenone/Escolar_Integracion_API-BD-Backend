@@ -1,14 +1,14 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { Student } from './entities/student.entity';
 import { StudentDto } from './dto/create-student.dto';
 
 @Controller('student')
 export class StudentController {
-  constructor(private readonly studentService: StudentService) {}
+  constructor(private readonly studentService: StudentService) { }
 
   @Post()
-  async createStudent( student: StudentDto): Promise<Student> {
+  async createStudent(student: StudentDto): Promise<Student> {
     return this.studentService.createStudent(student);
   }
 
@@ -19,21 +19,23 @@ export class StudentController {
 
   @Get(':id')
   async getStudentById(@Param('id', new ParseIntPipe({
-      errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
-    })) id: number ): Promise<Student> {
+    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+  })) id: number): Promise<Student> {
     return this.studentService.getStudentById(id)
   }
 
   @Put(':id')
   async updateStudent(@Param('id', new ParseIntPipe({
-    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE})
-    ) id: number,
+    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+  })) id: number,
     @Body() student: StudentDto): Promise<Student> {
-      return this.studentService.updateStudent(id, student)
+    return this.studentService.updateStudent(id, student)
   }
-/*
-  @Get()
-  getStudentsByLastName(@Query('lastname') lastname?: string): Promise<Student[]> {
-    if(!lastname) return this.studentService.getStudentsByLastname(lastname);
-  }*/
+
+  @Delete()
+  async deleteStudent(@Param(('id'), new ParseIntPipe({
+    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+  })) id: number): Promise<any> {
+    return this.studentService.deleteStudent(id)
+  }
 }

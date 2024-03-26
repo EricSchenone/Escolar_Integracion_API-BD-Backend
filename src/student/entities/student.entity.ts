@@ -11,7 +11,7 @@ export class Student {
     @Column("varchar")
     private lastname: string;
 
-    @Column("datetime")
+    @Column("date")
     private birthday: Date;
 
     constructor(name: string, lastname: string, birthday: Date) {

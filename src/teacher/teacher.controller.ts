@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Delete } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { SchoolDto } from 'src/school/dto/create-school.dto';
 import { TeacherDto } from './dto/create-teacher.dto';
@@ -33,5 +33,12 @@ export class TeacherController {
     })) id: number,
     @Body() teacher: TeacherDto): Promise<Teacher> {
     return this.teacherService.updateTeacher(id, teacher);
+  }
+
+  @Delete(':id')
+  async deleteTeacher(@Param(('id'), new ParseIntPipe({
+    errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
+  })) id: number): Promise<any> {
+    return this.teacherService.deleteTeacher(id)
   }
 }

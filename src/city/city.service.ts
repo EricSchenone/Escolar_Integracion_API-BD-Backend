@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { City } from './entities/city.entity';
 import { FindOneOptions, QueryFailedError, Repository } from 'typeorm';
@@ -24,7 +24,8 @@ export class CityService {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Error en el registro de la ciudad en la base de datos'
         },
-          HttpStatus.INTERNAL_SERVER_ERROR)};
+          HttpStatus.INTERNAL_SERVER_ERROR)
+      };
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'Error en el resgistro de la ciudad'
@@ -50,10 +51,11 @@ export class CityService {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Error en la consulta a la base de datos'
         },
-          HttpStatus.INTERNAL_SERVER_ERROR)};
+          HttpStatus.INTERNAL_SERVER_ERROR)
+      };
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
-        error: error
+        error: 'No existe una ciudad con el id:' + id
       },
         HttpStatus.BAD_REQUEST)
     }
@@ -73,7 +75,8 @@ export class CityService {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Error en la actualizacion de la ciudad en la base de datos'
         },
-          HttpStatus.INTERNAL_SERVER_ERROR)};
+          HttpStatus.INTERNAL_SERVER_ERROR)
+      };
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'Error en la actualizacion de la ciudad'
@@ -81,4 +84,27 @@ export class CityService {
         HttpStatus.BAD_REQUEST)
     }
   }
+
+  async deleteCity(id: number): Promise<void> {
+    try {
+      const criteria: FindOneOptions = { where: { id_city: id } };
+      const city: City = await this.cityRepository.findOne(criteria)
+      if (!city) throw new NotFoundException('No existe una escuela con el id:' + id)
+      await this.cityRepository.delete(city.getIdCity());
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new HttpException({
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Error en la eliminación de la ciudad en la base de datos'
+        },
+          HttpStatus.INTERNAL_SERVER_ERROR)
+      };
+      throw new HttpException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Error en la eliminación de la ciudad'
+      },
+        HttpStatus.NOT_FOUND)
+    }
+  }
+
 }
