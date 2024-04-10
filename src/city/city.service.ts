@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { City } from './entities/city.entity';
-import { FindOneOptions, QueryFailedError, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, QueryFailedError, Repository } from 'typeorm';
 import { CityDto } from './dto/create-city.dto';
 
 @Injectable()
@@ -35,13 +35,14 @@ export class CityService {
   }
 
   async getAllCities(): Promise<City[]> {
-    const cities: City[] = await this.cityRepository.find()
+    let criteria: FindManyOptions = { relations: ['classes']}
+    const cities: City[] = await this.cityRepository.find(criteria)
     return cities;
   }
 
   async getCityById(id: number): Promise<City> {
     try {
-      const criteria: FindOneOptions = { where: { id_city: id } }
+      const criteria: FindOneOptions = { relations: ['classes'], where: { id_city: id } }
       const city: City = await this.cityRepository.findOne(criteria);
       if (city) return city;
       throw new Error('No exite ninguna ciudad con el id:' + id)
@@ -65,8 +66,7 @@ export class CityService {
     try {
       const criteria: FindOneOptions = { where: { id_city: id } };
       let updateCity = await this.cityRepository.findOne(criteria);
-      if (!updateCity) throw new Error('No se encuentra la cuidad con id:' + id),
-        updateCity.setName(cityDto.name);
+      updateCity.setName(cityDto.name);
       updateCity = await this.cityRepository.save(updateCity);
       return updateCity;
     } catch (error) {
@@ -79,7 +79,7 @@ export class CityService {
       };
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
-        error: 'Error en la actualizacion de la ciudad'
+        error: 'Error en la actualizacion, no se encuentra una cuidad con id:' + id
       },
         HttpStatus.BAD_REQUEST)
     }

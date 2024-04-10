@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpSt
 import { CityService } from './city.service';
 import { CityDto } from './dto/create-city.dto';
 import { City } from './entities/city.entity';
+import { expectType } from 'ts-expect';
 
 @Controller('city')
 export class CityController {
@@ -31,6 +32,7 @@ export class CityController {
       errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE
     })) id: number,
     @Body() city: CityDto): Promise<City> {
+      expectType<CityDto>(city);
     return this.cityService.updateCity(id, city);
   }
 

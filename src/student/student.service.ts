@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, QueryFailedError, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, QueryFailedError, Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { StudentDto } from './dto/create-student.dto';
 
@@ -37,13 +37,14 @@ export class StudentService {
 
 
     async getAllStudents(): Promise<Student[]> {
-        const students: Student[] = await this.studentRepository.find();
+        const criteria: FindManyOptions = { relations: ['classes', 'students']}
+        const students: Student[] = await this.studentRepository.find(criteria);
         return students;
     }
 
     async getStudentById(id: number): Promise<Student> {
         try {
-            const criteria: FindOneOptions = { where: { id_student: id } }
+            const criteria: FindOneOptions = { relations: ['classes', 'estudents'], where: { id_student: id } }
             const student: Student = await this.studentRepository.findOne(criteria);
             if (student) return student;
             throw new Error('No existe un estudiante con el id:' + id)
@@ -96,7 +97,6 @@ export class StudentService {
             const student: Student = await this.studentRepository.findOne(criteria)
             if (!student) throw new NotFoundException('No existe una escuela con el id:' + id)
             await this.studentRepository.delete(student.getIdStudent());
-    
         } catch (error) {
             if (error instanceof QueryFailedError) {
                 throw new HttpException({

@@ -1,5 +1,6 @@
 import { School } from 'src/school/entities/school.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm'
+import { IsString } from 'class-validator';
 
 @Entity('cities') 
     export class City{
@@ -7,11 +8,13 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
         private id_city: number;
 
         @Column()
+        @IsString()
         private name: string;
-/*
-        @OneToMany(() => School, (school) => school.city)
-        school: School[];
-    */
+
+        @OneToMany(() => School, school => school.id_city)
+        @JoinColumn()
+        id_school: School[];
+    
 
         constructor(name : string) {
             this.name = name;

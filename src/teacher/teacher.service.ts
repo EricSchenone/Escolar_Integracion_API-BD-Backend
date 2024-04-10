@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from './entities/teacher.entity';
-import { FindOneOptions, QueryFailedError, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, QueryFailedError, Repository } from 'typeorm';
 import { TeacherDto } from './dto/create-teacher.dto';
 
 @Injectable()
@@ -26,13 +26,14 @@ export class TeacherService {
     }
 
     async getAll(): Promise<Teacher[]> {
-        const teachers: Teacher[] = await this.teacherRepository.find();
+        const criteria: FindManyOptions = { relations:['classes']};
+        const teachers: Teacher[] = await this.teacherRepository.find(criteria);
         return teachers;
     }
 
     async getTeacherById( id: number ): Promise<Teacher> {
         try{
-            const criteria : FindOneOptions = { where: { id_teacher: id } }
+            const criteria : FindOneOptions = { relations:['classes'], where: { id_teacher: id } }
             const teacher = await this.teacherRepository.findOne(criteria)
             if(teacher) return teacher;
             throw new Error('No existe un porfesor registrado con el id:' + id)

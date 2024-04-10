@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Course } from "src/course/entities/course.entity";
+import { Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity('teachers')
@@ -11,6 +12,10 @@ export class Teacher {
 
     @Column()
     private lastname: string;
+
+    @OneToMany(() => Course, course => course.id_teacher)
+    @JoinColumn({ name: 'courses' })
+    id_course: Course[]
 
     constructor( name: string, lastname: string) {
         this.name = name,

@@ -70,9 +70,8 @@ export class SchoolService {
     async updateSchool(id: number, schoolDto: SchoolDto): Promise<School> {
         try {
             const criteria: FindOneOptions = { where: { id_school: id } };
-            let updateSchool = await this.schoolRepository.findOne(criteria);
-            if (!updateSchool) throw new NotFoundException('No se encuentra una escuela con id:' + id),
-                updateSchool.setNmae(schoolDto.name);
+            let updateSchool = await this.schoolRepository.findOne(criteria);  
+            updateSchool.setNmae(schoolDto.name);
             updateSchool.setAddress(schoolDto.address);
             updateSchool = await this.schoolRepository.save(updateSchool);
             return updateSchool;
@@ -86,7 +85,7 @@ export class SchoolService {
             };
             throw new HttpException({
                 status: HttpStatus.BAD_REQUEST,
-                error: 'Error en la actualizacion de la escuela'
+                error: 'Error en la actualizacion de la escuela, no se encuentra una escuela con id:' + id
             },
                 HttpStatus.BAD_REQUEST)
         }
